@@ -1,26 +1,21 @@
 //axios import buraya gelecek
+import axios from "axios";
 
 var benimIP;
-
 
 // ------------ değiştirmeyin --------------
 // licensed to Ergineer 2022
 require("babel-core/register");
 require("babel-polyfill");
-async function ipAdresimiAl(){
-	await axios({
-		method: 'get',
-		url: 'https://apis.ergineer.com/ipadresim',
-	})
-	.then(function (response) {
-		return response.data
-	})
-	.then(function (a) {
-		benimIP=a
-	});
-}				
+async function ipAdresimiAl() {
+  await axios({
+    method: "get",
+    url: "https://apis.ergineer.com/ipadresim",
+  }).then(function (res) {
+    benimIP = res.data;
+  });
+}
 // ------------ değiştirmeyin --------------
-
 
 /*
 	ADIM 1: axios kullanarak, aşağıdaki URL'ye GET sorgusu atacağız
@@ -67,6 +62,93 @@ async function ipAdresimiAl(){
 	Örnek dinamik URL kullanımı: var url = "https://apis.ergineer.com/ipgeoapi/"+benimIP; 
 */
 
-
-
 //kodlar buraya gelecek
+const cardComponent = (data) => {
+  const divCard = document.createElement("div");
+  divCard.classList.add("card");
+
+  const imgCard = document.createElement("img");
+  imgCard.setAttribute("src", data.ülkebayrağı);
+
+  const divCardInfo = document.createElement("div");
+  divCardInfo.classList.add("card-info");
+
+  const h3IP = document.createElement("h3");
+  h3IP.classList.add("ip");
+
+  const pCountry = document.createElement("p");
+  pCountry.classList.add("ulke");
+
+  const pLatLong = document.createElement("p");
+  const pCity = document.createElement("p");
+  const pTime = document.createElement("p");
+  const pExchange = document.createElement("p");
+  const pISP = document.createElement("p");
+
+  h3IP.textContent = data.sorgu;
+  pCountry.textContent = `${data.ülke} (${data.ülkeKodu})`;
+  pLatLong.textContent = `Enlem: ${data.enlem} Boylam: ${data.boylam}`;
+  pCity.textContent = `Şehir: ${data.şehir}`;
+  pTime.textContent = `Saat dilimi: ${data.saatdilimi}`;
+  pExchange.textContent = `Para birimi: ${data.parabirimi}`;
+  pISP.textContent = `ISP: ${data.isp}`;
+
+  divCardInfo.append(h3IP, pCountry, pLatLong, pCity, pTime, pExchange, pISP);
+  divCard.append(imgCard, divCardInfo);
+
+  return divCard;
+};
+
+const divCards = document.querySelector(".cards");
+
+async function getData() {
+  await ipAdresimiAl();
+
+  axios({
+    method: "get",
+    url: "https://apis.ergineer.com/ipgeoapi/" + benimIP,
+  }).then((res) => {
+    divCards.append(cardComponent(res.data));
+    // return res.data;
+  });
+}
+
+getData();
+
+/*
+// 1
+ipAdresimiAl();
+setTimeout(console.log("hi"), 5000)
+console.log("hellooo", benimIP);
+
+// 2
+const getBenimIP = async () => {
+  await ipAdresimiAl();
+  console.log("helloo", benimIP);
+};
+
+getBenimIP();
+
+// 3
+(async() => {
+	await ipAdresimiAl();
+	console.log(benimIP);
+});
+
+//
+for (let i = 0; i < 10000; i++) {
+  console.log(1, benimIP);
+}
+
+*/
+// const getBenimIP = async () => {
+//   await ipAdresimiAl();
+//   console.log("helloo", benimIP);
+// };
+
+// getBenimIP();
+
+// ipAdresimiAl();
+// setTimeout(() => {
+//   console.log("hi", benimIP);
+// }, "1000");
